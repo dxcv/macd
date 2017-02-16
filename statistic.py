@@ -3,23 +3,21 @@ import numpy as np
 from Trend import *
 
 
-def returns_sta(boduan):
+def returns_sta(boduan,bottom,top):
     rai = boduan[boduan.bd_type == "raise"].returns
     dec = boduan[boduan.bd_type == "decline"].returns
 
-    rai_sta = [rai.mean(), rai.std(), rai.max(), rai.min(), len(rai)]
-    dec_sta = [dec.mean(), dec.std(), dec.min(), dec.max(), len(dec)]
-
     rai_l = len(rai)
     dec_l = len(dec)
-    rai = rai.sort_values()[int(0.1 * rai_l):int(0.9 * rai_l)]
-    dec = dec.sort_values()[int(0.1 * dec_l):int(0.9 * dec_l)]
+    rai = rai.sort_values()[int(bottom * rai_l):int(top * rai_l)]
+    dec = dec.sort_values()[int(bottom * dec_l):int(top * dec_l)]
 
-    rai_sta_adj = [rai.mean(), rai.std(), rai.max(), rai.min(), len(rai)]
-    dec_sta_adj = [dec.mean(), dec.std(), dec.min(), dec.max(), len(dec)]
+    rai_sta_adj = [rai.mean(), rai.std(), rai.quantile(), rai.max(), rai.min(), len(rai)]
+    dec_sta_adj = [dec.mean(), dec.std(), dec.quantile(), dec.min(), dec.max(), len(dec)]
 
-    return pd.DataFrame({'上涨波段': rai_sta, "下跌波段": dec_sta}, index=['均值', '标准差', '最大值', '最小值', '样本数']).T, pd.DataFrame(
-        {'上涨波段': rai_sta_adj, "下跌波段": dec_sta_adj}, index=['均值', '标准差', '最大值', '最小值', '样本数']).T
+    return pd.DataFrame(
+        {'raise': rai_sta_adj, "decine": dec_sta_adj}, index=[
+            'mean', 'std', 'median', 'max', 'min', 'sample_num']).T
 
 
 def continue_sta(boduan):
