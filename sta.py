@@ -96,8 +96,8 @@ class statistic:
         dec_sta_adj = [dec.mean(),
                        dec.std(),
                        dec.quantile(),
-                       dec.min(),
                        dec.max(),
+                       dec.min(),
                        dec[dec <= 3].shape[0],
                        dec[dec <= 3].shape[0] / (dec.shape[0] + 0.0),
                        len(dec)]
