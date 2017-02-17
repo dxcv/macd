@@ -18,6 +18,8 @@ class inject:
         self.min_close = minute.close
         self.day_close = day.close
         self.misplace_point = pd.DataFrame({})
+        self.zuji_situation = pd.DataFrame({})
+        self.tupo_situation = pd.DataFrame({})
 
 
 
@@ -220,8 +222,123 @@ class inject:
         df = pd.DataFrame({'miplace_date':misplace_point,'type':point_type})
         self.misplace_point = df
 
+    def restrict(self):
+        min_boduan = self.min_boduan
+        day_boduan = self.day_boduan
+        min_close = self.min_close
+        day_close = self.day_close
+        min_boduan_list = []
+        zuji = []
+        zuji_success = []
+        zuji_boduan = []
+        zuji_day = []
+        tupo = []
+        tupo_success = []
+        tupo_boduan = []
+        tupo_day = []
+        for i in range(day_boduan.shape[0] - 1):
+            start_date = day_boduan.iloc[i].start_date
+            comfirm_date = day_boduan.iloc[i + 1].comfirm_date
+            mapping_df = min_boduan[(min_boduan.start_date >= start_date) & (min_boduan.comfirm_date <= comfirm_date)]
+            if not mapping_df.empty:
+                a = mapping_df.index[0]
+                b = mapping_df.index[-1]
+            if min_boduan.ix[a].bd_type != day_boduan.iloc[i].bd_type:
+                mapping_df = min_boduan.ix[a - 1:b]
+            min_boduan_list.append(mapping_df)
+            if day_boduan.iloc[i].bd_type == "raise":
+                flag = True
+                j = 0
+
+                while flag and j < mapping_df.shape[0] - 2:
+                    if mapping_df.iloc[j + 2].end_price < mapping_df.iloc[j].end_price:
+                        if j + 3 < mapping_df.shape[0]:
+                            zuji.append(mapping_df.iloc[j + 3].comfirm_date)
+                            zuji_boduan.append(i)
+                            zuji_day.append(day_boduan.iloc[i +1 ].comfirm_date)
+                            premax = day_close.ix[
+                                     day_boduan.iloc[i].comfirm_date:mapping_df.iloc[j + 3].comfirm_date].max()
+                            nowmax = day_close.ix[
+                                     mapping_df.iloc[j + 3].comfirm_date:day_boduan.iloc[i + 1].comfirm_date].max()
+                            if nowmax > premax:
+                                zuji_success.append(0)
+                            else:
+                                zuji_success.append(1)
+                                flag = False
+                    j += 2
+
+                flag = True
+                j = 0
+
+                while flag and j < mapping_df.shape[0] - 4:
+                    avalue = mapping_df.iloc[j + 3].end_price
+                    five = mapping_df.iloc[j + 4]
+                    five_price = min_close.ix[five.comfirm_date:day_boduan.iloc[i + 1].comfirm_date]
+                    c = five_price[five_price < avalue]
+
+                    if not c.empty:
+                        tupo.append(c.index[0])
+                        tupo_boduan.append(i)
+                        tupo_day.append(day_boduan.iloc[i + 1].comfirm_date)
+                        premax = day_close.ix[day_boduan.iloc[i].comfirm_date:c.index[0]].max()
+                        nowmax = day_close.ix[c.index[0]:day_boduan.iloc[i + 1].comfirm_date].max()
+                        if nowmax > premax:
+                            tupo_success.append(0)
+                        else:
+                            tupo_success.append(1)
+                            flag = False
+                    j += 2
+
+            if day_boduan.iloc[i].bd_type == "decline":
+                flag = True
+                j = 0
+                while flag and j < mapping_df.shape[0] - 2:
+                    if mapping_df.iloc[j + 2].end_price > mapping_df.iloc[j].end_price:
+                        if j + 3 < mapping_df.shape[0]:
+                            zuji_boduan.append(i)
+                            zuji.append(mapping_df.iloc[j + 3].comfirm_date)
+                            zuji_day.append(day_boduan.iloc[i + 1].confirm_date)
+                            premin = day_close.ix[
+                                     day_boduan.iloc[i].comfirm_date:mapping_df.iloc[j + 3].comfirm_date].min()
+                            nowmin = day_close.ix[
+                                     mapping_df.iloc[j + 3].comfirm_date:day_boduan.iloc[i + 1].comfirm_date].min()
+                            if nowmin < premin:
+                                zuji_success.append(0)
+                            else:
+                                zuji_success.append(1)
+                                flag = False
+                    j += 2
+
+                flag = True
+                j = 0
+
+                while flag and j < mapping_df.shape[0] - 4:
+                    avalue = mapping_df.iloc[j + 3].end_price
+                    five = mapping_df.iloc[j + 4]
+                    five_price = min_close.ix[five.comfirm_date:day_boduan.iloc[i + 1].comfirm_date]
+                    c = five_price[five_price > avalue]
+
+                    if not c.empty:
+                        tupo.append(c.index[0])
+                        tupo_boduan.append(i)
+                        tupo.append(day_boduan.iloc[i + 1].comfirm_date)
+                        premax = day_close.ix[day_boduan.iloc[i].comfirm_date:c.index[0]].min()
+                        nowmax = day_close.ix[c.index[0]:day_boduan.iloc[i + 1].comfirm_date].min()
+                        if nowmax < premax:
+                            tupo_success.append(0)
+                        else:
+                            tupo_success.append(1)
+                            flag = False
+                    j += 2
+
+        zuji_situation = pd.DataFrame({'zuji_date': zuji,'zuji_daye':zuji_day, 'zuji_boduan': zuji_boduan, 'zuji_success': zuji_success})
+        tupo_situation = pd.DataFrame({'tupo_date': tupo,'tupo_day':tupo_day, 'tupo_boduan': tupo_boduan, 'tupo_success': tupo_success})
+        self.zuji_situation = zuji_situation
+        self.tupo_situation = tupo_situation
+
     def run(self):
         self.mapping()
         self.comfirm_num()
         self.misplace()
+        self.restrict()
 
