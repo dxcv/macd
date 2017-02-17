@@ -6,7 +6,6 @@ from Tkinter import *
 import tkFileDialog
 import pandas as pd
 import os
-
 ISOTIMEFORMAT="%Y-%m-%d %X"
 root_user = Tk()
 
