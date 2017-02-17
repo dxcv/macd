@@ -20,6 +20,7 @@ class inject:
         self.misplace_point = pd.DataFrame({})
         self.zuji_situation = pd.DataFrame({})
         self.tupo_situation = pd.DataFrame({})
+        self.zujiplustupo = pd.DataFrame({})
 
 
 
@@ -236,6 +237,10 @@ class inject:
         tupo_success = []
         tupo_boduan = []
         tupo_day = []
+        zt = []
+        zt_boduan = []
+        zt_day = []
+        zt_success = []
         for i in range(day_boduan.shape[0] - 1):
             start_date = day_boduan.iloc[i].start_date
             comfirm_date = day_boduan.iloc[i + 1].comfirm_date
@@ -289,6 +294,42 @@ class inject:
                             flag = False
                     j += 2
 
+                flag = True
+                j = 0
+
+                while flag and j < mapping_df.shape[0] - 3:
+                    a = mapping_df.iloc[j].end_price
+                    b = mapping_df.iloc[j + 1].end_price
+                    c = mapping_df.iloc[j + 2].end_price
+                    append = False
+                    if a > c:
+                        d =mapping_df.iloc[j + 3]
+                        if d.comfirm_price < b:
+                            zt.append(d.comfirm_date)
+                            zt_boduan.append(i)
+                            zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
+                            append = True
+                        else:
+                            d_price = min_close.ix[d.comfirm_date:day_boduan.iloc[i + 1].comfirm_date]
+                            d_price = d_price[d_price < b]
+                            if not d_price.empty:
+                                zt.append(d_price.index[0])
+                                zt_boduan.append(i)
+                                zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
+                                append = True
+
+                        if append:
+                            premax = day_close.ix[day_boduan.iloc[i].comfirm_date:zt[-1]].max()
+                            nowmax = day_close.ix[zt[-1]:day_boduan.iloc[i + 1].comfirm_date].max()
+                            if premax >= nowmax:
+                                zt_success.append(1)
+                                flag = False
+                            else:
+                                zt_success.append(0)
+                    j += 2
+
+
+
             if day_boduan.iloc[i].bd_type == "decline":
                 flag = True
                 j = 0
@@ -297,7 +338,7 @@ class inject:
                         if j + 3 < mapping_df.shape[0]:
                             zuji_boduan.append(i)
                             zuji.append(mapping_df.iloc[j + 3].comfirm_date)
-                            zuji_day.append(day_boduan.iloc[i + 1].confirm_date)
+                            zuji_day.append(day_boduan.iloc[i + 1].comfirm_date)
                             premin = day_close.ix[
                                      day_boduan.iloc[i].comfirm_date:mapping_df.iloc[j + 3].comfirm_date].min()
                             nowmin = day_close.ix[
@@ -321,7 +362,7 @@ class inject:
                     if not c.empty:
                         tupo.append(c.index[0])
                         tupo_boduan.append(i)
-                        tupo.append(day_boduan.iloc[i + 1].comfirm_date)
+                        tupo_day.append(day_boduan.iloc[i + 1].comfirm_date)
                         premax = day_close.ix[day_boduan.iloc[i].comfirm_date:c.index[0]].min()
                         nowmax = day_close.ix[c.index[0]:day_boduan.iloc[i + 1].comfirm_date].min()
                         if nowmax < premax:
@@ -331,10 +372,46 @@ class inject:
                             flag = False
                     j += 2
 
-        zuji_situation = pd.DataFrame({'zuji_date': zuji,'zuji_daye':zuji_day, 'zuji_boduan': zuji_boduan, 'zuji_success': zuji_success})
-        tupo_situation = pd.DataFrame({'tupo_date': tupo,'tupo_day':tupo_day, 'tupo_boduan': tupo_boduan, 'tupo_success': tupo_success})
+
+                while flag and j < mapping_df.shape[0] - 3:
+                    a = mapping_df.iloc[j].end_price
+                    b = mapping_df.iloc[j + 1].end_price
+                    c = mapping_df.iloc[j + 2].end_price
+                    append= False
+                    if a < c:
+                        d =mapping_df.iloc[j + 3]
+                        if d.comfirm_price > b:
+                            zt.append(d.comfirm_date)
+                            zt_boduan.append(i)
+                            zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
+                            append = True
+                        else:
+                            d_price = min_close.ix[d.comfirm_date:day_boduan.iloc[i + 1].comfirm_date]
+                            d_price = d_price[d_price > b]
+                            if not d_price.empty:
+                                zt.append(d_price.index[0])
+                                zt_boduan.append(i)
+                                zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
+                                append =True
+
+                        if append:
+                            premin = day_close.ix[day_boduan.iloc[i].comfirm_date:zt[-1]].min()
+                            nowmin = day_close.ix[zt[-1]:day_boduan.iloc[i + 1].comfirm_date].min()
+                            if premin <= nowmin:
+                                zt_success.append(1)
+                                flag = False
+                            else:
+                                zt_success.append(0)
+
+
+                    j += 2
+
+        zuji_situation = pd.DataFrame({'zuji_date': zuji,'day_comfirm':zuji_day, 'zuji_boduan': zuji_boduan, 'zuji_success': zuji_success})
+        tupo_situation = pd.DataFrame({'tupo_date': tupo,'day_comfirm':tupo_day, 'tupo_boduan': tupo_boduan, 'tupo_success': tupo_success})
+        zt_situation = pd.DataFrame({'zt_date':zt,'day_comfirm':zt_day,'zt_boduan':zt_boduan,'zt_success':zt_success})
         self.zuji_situation = zuji_situation
         self.tupo_situation = tupo_situation
+        self.zujiplustupo = zt_situation
 
     def run(self):
         self.mapping()
