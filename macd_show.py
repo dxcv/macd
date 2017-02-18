@@ -220,14 +220,13 @@ class Show_Macd:
         min_limit_continue_time = self.min_sta.limit_continue_time
 
         misplace_point = self.mapping_object.misplace_point
-
-
-
-
-        misplace_point.to_excel(filepath+"\\misplace_point.xlsx")
+        zuji = self.mapping_object.zuji_situation
+        tupo = self.mapping_object.tupo_situation
+        zt = self.mapping_object.zujiplustupo
 
         writer_day = pd.ExcelWriter(filepath+"\\day_boduan.xlsx")
         writet_minute = pd.ExcelWriter(filepath+"\\minute_boduan.xlsx")
+        writer_pre = pd.ExcelWriter(filepath+"\\pre_judge.xlsx")
 
         day_boduan.to_excel(writer_day,sheet_name="day_boduan")
         day_ret_sta.to_excel(writer_day,sheet_name="day_ret_sta")
@@ -249,9 +248,13 @@ class Show_Macd:
         min_continue_time.to_excel(writet_minute, sheet_name="min_continue_time")
         min_limit_continue_time.to_excel(writet_minute, sheet_name="min_limit_continue_time")
 
+        misplace_point.to_excel(writer_pre,sheet_name="misplace")
+        zuji.to_excel(writer_pre, sheet_name="zuji")
+        tupo.to_excel(writer_pre, sheet_name="tupo")
+        zt.to_excel(writer_pre,sheet_name="zt")
         writer_day.save()
         writet_minute.save()
-
+        writer_pre.save()
 
         code_data_split = self.day
 

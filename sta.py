@@ -123,6 +123,7 @@ class statistic:
                 p += cash / close.ix[date] * (1 - ratio)
                 cash = 0
 
+
             if date in decline_date and p > 0:
                 cash += p * close.ix[date] * (1 - ratio)
                 p = 0
@@ -144,3 +145,5 @@ class statistic:
         self.continue_time = self.continue_sta_day(0.0, 1.0)
         self.limit_continue_time = self.continue_sta_day(0.1, 0.9)
         self.trade_result = self.trade_boduan(0.0)
+
+

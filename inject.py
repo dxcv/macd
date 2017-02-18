@@ -179,6 +179,9 @@ class inject:
             temp = temp[temp.start_date < n1.end_date]
             if temp.empty:
                 continue
+
+            if temp.index[-1] >= day_boduan.shape[0] - 1:
+                break
             A = temp.iloc[-1].comfirm_date
             e = self.minute.comfirm_point_list[i + 3]
             a = n1.start_date
