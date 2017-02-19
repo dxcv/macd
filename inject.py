@@ -644,19 +644,20 @@ class inject:
         self.tupo_situation = tupo_situation
         self.zujiplustupo = zt_situation
 
-    def trade_tupo(self):
+    def trade(self, situation):
         in_tupo_buy = False
         in_tupo_sell = False
         day_boduan = self.day_boduan
         min_close = self.min_close
+        day_close = self.day_close
         buy_date = day_boduan[
             day_boduan.bd_type == "raise"].comfirm_date.tolist()
         sell_date = day_boduan[
             day_boduan.bd_type == "decline"].comfirm_date.tolist()
-        tupo_date_buy = self.tupo_situation[
-            self.tupo_situation.tupo_type == "raise"].tupo_date.tolist()
-        tupo_date_sell = self.tupo_situation[
-            self.tupo_situation.tupo_type == "decline"].tupo_date.tolist()
+        situation_date_buy = situation[
+            situation.bd_type == "raise"].judge_date.tolist()
+        situation_date_sell = situation[
+            situation.bd_type == "decline"].judge_date.tolist()
 
         stream = []
         cash = 1.0
@@ -674,13 +675,13 @@ class inject:
                 p = 0
                 in_tupo_buy = False
 
-            if date in tupo_date_buy and cash > 0:
+            if date in situation_date_buy and cash > 0:
                 p += cash / price_today
                 cash = 0
                 in_tupo_buy = True
                 buyday = date
 
-            if date in tupo_date_sell:
+            if date in situation_date_sell:
                 cash += p * price_today
                 p = 0
                 in_tupo_sell = True
@@ -689,8 +690,8 @@ class inject:
             if in_tupo_buy and p > 0:
                 temp = day_boduan[day_boduan.comfirm_date < buyday]
                 if not temp.empty:
-                    precomfirm_date = temp.ilco[-1].comfirm_date
-                    if price_today < min_close.ix[precomfirm_date:date].min():
+                    precomfirm_date = temp.iloc[-1].comfirm_date
+                    if price_today < day_close.ix[precomfirm_date:date].min():
                         cash += p * price_today
                         p = 0
                         in_tupo_buy = False
@@ -699,7 +700,7 @@ class inject:
                 temp = day_boduan[day_boduan.comfirm_date < sellday]
                 if not temp.empty:
                     precomfirm_date = temp.iloc[-1].comfirm_date
-                    if price_today > min_close.ix[precomfirm_date:date].max():
+                    if price_today > day_close.ix[precomfirm_date:date].max():
                         p += cash / price_today
                         cash = 0
                         in_tupo_sell = False
@@ -708,6 +709,8 @@ class inject:
         df = pd.DataFrame({'strategy': stream,
                            'benchmark': min_close.values},
                           index=min_close.index)
+
+        df = df / df.iloc[0]
         return df
 
     def run(self):
