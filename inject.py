@@ -308,12 +308,15 @@ class inject:
                             j + 2].end_price < mapping_df.iloc[j].end_price:
                         if j + 3 < mapping_df.shape[0]:
                             zuji.append(mapping_df.iloc[j + 3].comfirm_date)
-                            zuji_boduan.append(i+1)
+                            zuji_boduan.append(i + 1)
                             zuji_day.append(
                                 day_boduan.iloc[
                                     i + 1].comfirm_date)
                             zuji_type.append("decline")
-                            zuji_price.append(min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
+                            zuji_price.append(
+                                min_close.ix[
+                                    mapping_df.iloc[
+                                        j + 3].comfirm_date])
                             premax = day_close.ix[
                                 day_boduan.iloc[i].comfirm_date:mapping_df.iloc[
                                     j + 3].comfirm_date].max()
@@ -331,14 +334,17 @@ class inject:
                                     1].comfirm_date]
                             if nowmax > premax:
                                 zuji_success.append(0)
-                                f = price_boduan[price_boduan > premax].index[0]
+                                f = price_boduan[
+                                    price_boduan > premax].index[0]
                                 zuji_false.append(f)
                                 zuji_false_price.append(min_close.ix[f])
 
                             else:
                                 zuji_success.append(1)
-                                zuji_false.append(mapping_df.iloc[j + 3].comfirm_date)
-                                zuji_false_price.append(min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
+                                zuji_false.append(
+                                    mapping_df.iloc[j + 3].comfirm_date)
+                                zuji_false_price.append(
+                                    min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
                                 flag = False
                     j += 2
 
@@ -355,7 +361,7 @@ class inject:
 
                     if not c.empty:
                         tupo.append(c.index[0])
-                        tupo_boduan.append(i+1)
+                        tupo_boduan.append(i + 1)
                         tupo_day.append(day_boduan.iloc[i + 1].comfirm_date)
                         tupo_type.append("decline")
                         tupo_price.append(min_close.ix[c.index[0]])
@@ -391,7 +397,7 @@ class inject:
                         d = mapping_df.iloc[j + 3]
                         if d.comfirm_price < b:
                             zt.append(d.comfirm_date)
-                            zt_boduan.append(i+1)
+                            zt_boduan.append(i + 1)
                             zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
 
                             append = True
@@ -402,7 +408,7 @@ class inject:
                             d_price = d_price[d_price < b]
                             if not d_price.empty:
                                 zt.append(d_price.index[0])
-                                zt_boduan.append(i)
+                                zt_boduan.append(i + 1)
                                 zt_day.append(
                                     day_boduan.iloc[
                                         i + 1].comfirm_date)
@@ -425,7 +431,8 @@ class inject:
                                 flag = False
                             else:
                                 zt_success.append(0)
-                                f = price_boduan[price_boduan > premax].index[0]
+                                f = price_boduan[
+                                    price_boduan > premax].index[0]
                                 zt_false.append(f)
                                 zt_false_price.append(min_close.ix[f])
                     j += 2
@@ -437,13 +444,16 @@ class inject:
                     if mapping_df.iloc[
                             j + 2].end_price > mapping_df.iloc[j].end_price:
                         if j + 3 < mapping_df.shape[0]:
-                            zuji_boduan.append(i+1)
+                            zuji_boduan.append(i + 1)
                             zuji.append(mapping_df.iloc[j + 3].comfirm_date)
                             zuji_day.append(
                                 day_boduan.iloc[
                                     i + 1].comfirm_date)
                             zuji_type.append("raise")
-                            zuji_price.append(min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
+                            zuji_price.append(
+                                min_close.ix[
+                                    mapping_df.iloc[
+                                        j + 3].comfirm_date])
                             premin = day_close.ix[
                                 day_boduan.iloc[i].comfirm_date:mapping_df.iloc[
                                     j + 3].comfirm_date].min()
@@ -454,21 +464,24 @@ class inject:
                                     i +
                                     1].comfirm_date].min()
                             price_boduan = day_close.ix[
-                                           mapping_df.iloc[
-                                               j +
-                                               3].comfirm_date:day_boduan.iloc[
-                                               i +
-                                               1].comfirm_date]
+                                mapping_df.iloc[
+                                    j +
+                                    3].comfirm_date:day_boduan.iloc[
+                                    i +
+                                    1].comfirm_date]
                             if nowmin < premin:
                                 zuji_success.append(0)
-                                f = price_boduan[price_boduan < premin].index[0]
+                                f = price_boduan[
+                                    price_boduan < premin].index[0]
                                 zuji_false.append(f)
                                 zuji_false_price.append(min_close.ix[f])
 
                             else:
                                 zuji_success.append(1)
-                                zuji_false.append(mapping_df.iloc[j + 3].comfirm_date)
-                                zuji_false_price.append(min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
+                                zuji_false.append(
+                                    mapping_df.iloc[j + 3].comfirm_date)
+                                zuji_false_price.append(
+                                    min_close.ix[mapping_df.iloc[j + 3].comfirm_date])
                                 flag = False
                     j += 2
 
@@ -485,7 +498,7 @@ class inject:
 
                     if not c.empty:
                         tupo.append(c.index[0])
-                        tupo_boduan.append(i+1)
+                        tupo_boduan.append(i + 1)
                         tupo_day.append(day_boduan.iloc[i + 1].comfirm_date)
                         tupo_type.append("raise")
                         tupo_price.append(min_close.ix[c.index[0]])
@@ -520,7 +533,7 @@ class inject:
                         d = mapping_df.iloc[j + 3]
                         if d.comfirm_price > b:
                             zt.append(d.comfirm_date)
-                            zt_boduan.append(i)
+                            zt_boduan.append(i + 1)
                             zt_day.append(day_boduan.iloc[i + 1].comfirm_date)
 
                             append = True
@@ -531,7 +544,7 @@ class inject:
                             d_price = d_price[d_price > b]
                             if not d_price.empty:
                                 zt.append(d_price.index[0])
-                                zt_boduan.append(i)
+                                zt_boduan.append(i + 1)
                                 zt_day.append(
                                     day_boduan.iloc[
                                         i + 1].comfirm_date)
@@ -548,7 +561,7 @@ class inject:
                                 i].comfirm_date:zt[-1]].min()
                             nowmax = day_close.ix[
                                 zt[-1]:day_boduan.iloc[i + 1].comfirm_date].min()
-                            print premax,nowmax
+                            print premax, nowmax
                             if premax <= nowmax:
                                 zt_success.append(1)
                                 zt_false.append(zt[-1])
@@ -556,7 +569,8 @@ class inject:
                                 flag = False
                             else:
                                 zt_success.append(0)
-                                f = price_boduan[price_boduan < premax].index[0]
+                                f = price_boduan[
+                                    price_boduan < premax].index[0]
                                 zt_false.append(f)
                                 zt_false_price.append(min_close.ix[f])
                     j += 2
@@ -565,56 +579,84 @@ class inject:
                                        'day_comfirm': zuji_day,
                                        'boduan_num': zuji_boduan,
                                        'success': zuji_success,
-                                       'bd_type':zuji_type,
-                                       'judge_price':zuji_price,
-                                       'false_date':zuji_false,
-                                       'false_price':zuji_false_price})
+                                       'bd_type': zuji_type,
+                                       'judge_price': zuji_price,
+                                       'false_date': zuji_false,
+                                       'false_price': zuji_false_price})
 
         tupo_situation = pd.DataFrame({'judge_date': tupo,
                                        'day_comfirm': tupo_day,
                                        'boduan_num': tupo_boduan,
                                        'success': tupo_success,
-                                       'bd_type':tupo_type,
-                                       'judge_price':tupo_price,
-                                       'false_date':tupo_false,
-                                       'false_price':tupo_false_price})
+                                       'bd_type': tupo_type,
+                                       'judge_price': tupo_price,
+                                       'false_date': tupo_false,
+                                       'false_price': tupo_false_price})
 
         zt_situation = pd.DataFrame({'judge_date': zt,
                                      'day_comfirm': zt_day,
                                      'boduan_num': zt_boduan,
                                      'success': zt_success,
-                                     'bd_type':zt_type,
-                                     'judge_price':zt_price,
-                                     'false_date':zt_false,
-                                     'false_price':zt_false_price})
+                                     'bd_type': zt_type,
+                                     'judge_price': zt_price,
+                                     'false_date': zt_false,
+                                     'false_price': zt_false_price})
 
-        zuji_situation['boduan_start'] = zuji_situation.apply(lambda x:day_boduan.iloc[x.boduan_num].start_date,axis=1)
-        zuji_situation['boduan_end'] = zuji_situation.apply(lambda x:day_boduan.iloc[x.boduan_num].end_date,axis=1)
-        zuji_situation['comfirm_price'] = zuji_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].comfirm_price,axis=1)
+        zuji_situation['boduan_start'] = zuji_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].start_date, axis=1)
+        zuji_situation['boduan_end'] = zuji_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].end_date, axis=1)
+        zuji_situation['comfirm_price'] = zuji_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].comfirm_price, axis=1)
 
-        tupo_situation['boduan_start'] = tupo_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].start_date,axis=1)
-        tupo_situation['boduan_end'] = tupo_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].end_date,axis=1)
-        tupo_situation['comfirm_price'] = tupo_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].comfirm_price,axis=1)
+        tupo_situation['boduan_start'] = tupo_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].start_date, axis=1)
+        tupo_situation['boduan_end'] = tupo_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].end_date, axis=1)
+        tupo_situation['comfirm_price'] = tupo_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].comfirm_price, axis=1)
 
-        zt_situation['boduan_start'] = zt_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].start_date,axis=1)
-        zt_situation['boduan_end'] = zt_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].end_date,axis=1)
-        zt_situation['comfirm_price'] = zt_situation.apply(lambda x: day_boduan.iloc[x.boduan_num].comfirm_price,axis=1)
+        zt_situation['boduan_start'] = zt_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].start_date, axis=1)
+        zt_situation['boduan_end'] = zt_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].end_date, axis=1)
+        zt_situation['comfirm_price'] = zt_situation.apply(
+            lambda x: day_boduan.iloc[x.boduan_num].comfirm_price, axis=1)
 
+        def get_returns(row):
+            if row.success == 1:
+                return (
+                    row.comfirm_price - row.judge_price) / row.judge_price if row.bd_type == "raise" else - (
+                    row.comfirm_price - row.judge_price) / row.judge_price
+
+            else:
+                return row.false_price / row.judge_price - \
+                    1 if row.bd_type == "raise" else - row.false_price / row.judge_price + 1
+
+        zuji_situation['returns'] = zuji_situation.apply(
+            lambda x: get_returns(x), axis=1)
+        tupo_situation['returns'] = tupo_situation.apply(
+            lambda x: get_returns(x), axis=1)
+        zt_situation['returns'] = zt_situation.apply(
+            lambda x: get_returns(x), axis=1)
 
         self.zuji_situation = zuji_situation
         self.tupo_situation = tupo_situation
         self.zujiplustupo = zt_situation
-
 
     def trade_tupo(self):
         in_tupo_buy = False
         in_tupo_sell = False
         day_boduan = self.day_boduan
         min_close = self.min_close
-        buy_date = day_boduan[day_boduan.bd_type == "raise"].comfirm_date.tolist()
-        sell_date = day_boduan[day_boduan.bd_type == "decline"].comfirm_date.tolist()
-        tupo_date_buy = self.tupo_situation[self.tupo_situation.tupo_type == "raise"].tupo_date.tolist()
-        tupo_date_sell = self.tupo_situation[self.tupo_situation.tupo_type == "decline"].tupo_date.tolist()
+        buy_date = day_boduan[
+            day_boduan.bd_type == "raise"].comfirm_date.tolist()
+        sell_date = day_boduan[
+            day_boduan.bd_type == "decline"].comfirm_date.tolist()
+        tupo_date_buy = self.tupo_situation[
+            self.tupo_situation.tupo_type == "raise"].tupo_date.tolist()
+        tupo_date_sell = self.tupo_situation[
+            self.tupo_situation.tupo_type == "decline"].tupo_date.tolist()
 
         stream = []
         cash = 1.0
@@ -628,7 +670,7 @@ class inject:
                 in_tupo_sell = False
 
             if date in sell_date and p > 0:
-                cash += p*price_today
+                cash += p * price_today
                 p = 0
                 in_tupo_buy = False
 
@@ -659,22 +701,14 @@ class inject:
                     precomfirm_date = temp.iloc[-1].comfirm_date
                     if price_today > min_close.ix[precomfirm_date:date].max():
                         p += cash / price_today
-                        cash =0
+                        cash = 0
                         in_tupo_sell = False
 
             stream.append(cash + p * price_today)
-        df = pd.DataFrame({'strategy':stream, 'benchmark':min_close.values},index=min_close.index)
+        df = pd.DataFrame({'strategy': stream,
+                           'benchmark': min_close.values},
+                          index=min_close.index)
         return df
-
-
-
-
-
-
-
-
-
-
 
     def run(self):
         self.mapping()
