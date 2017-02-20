@@ -3,10 +3,11 @@ import pandas as pd
 
 
 class statistic:
-    def __init__(self, split ):
+
+    def __init__(self, split):
         self.split = split
-        self.boduan =split.boduan
-        self.close =split.close
+        self.boduan = split.boduan
+        self.close = split.close
         self.ret_sta = pd.DataFrame({})
         self.limit_ret_sta = pd.DataFrame({})
         self.time_len = pd.DataFrame({})
@@ -17,26 +18,34 @@ class statistic:
         self.limit_continue_time = pd.DataFrame({})
         self.trade_result = pd.DataFrame({})
 
-
-
     def returns_sta(self, bottom, top):
         boduan = self.boduan
         rai = boduan[boduan.bd_type == "raise"].returns
         dec = boduan[boduan.bd_type == "decline"].returns
-
-
 
         rai_l = len(rai)
         dec_l = len(dec)
         rai = rai.sort_values()[int(bottom * rai_l):int(top * rai_l)]
         dec = dec.sort_values()[int(bottom * dec_l):int(top * dec_l)]
 
-        rai_sta_adj = [rai.mean(), rai.std(), rai.quantile(), rai.max(), rai.min(), len(rai)]
-        dec_sta_adj = [dec.mean(), dec.std(), dec.quantile(), dec.min(), dec.max(), len(dec)]
+        rai_sta_adj = [
+            rai.mean(),
+            rai.std(),
+            rai.quantile(),
+            rai.max(),
+            rai.min(),
+            len(rai)]
+        dec_sta_adj = [
+            dec.mean(),
+            dec.std(),
+            dec.quantile(),
+            dec.min(),
+            dec.max(),
+            len(dec)]
 
-        return  pd.DataFrame(
+        return pd.DataFrame(
             {'raise': rai_sta_adj, "decine": dec_sta_adj}, index=[
-        'mean', 'std', 'median', 'max', 'min', 'sample_num']).T
+                'mean', 'std', 'median', 'max', 'min', 'sample_num']).T
 
     def time_sta(self, bottom, top):
         boduan = self.boduan
@@ -47,16 +56,26 @@ class statistic:
         rai = rai.sort_values()[int(bottom * rai_l):int(top * rai_l)]
         dec = dec.sort_values()[int(bottom * dec_l):int(top * dec_l)]
 
-        rai_sta_adj = [rai.mean(), rai.std(), rai.quantile(), rai.max(), rai.min(), len(rai)]
-        dec_sta_adj = [dec.mean(), dec.std(), dec.quantile(), dec.max(), dec.min(), len(dec)]
+        rai_sta_adj = [
+            rai.mean(),
+            rai.std(),
+            rai.quantile(),
+            rai.max(),
+            rai.min(),
+            len(rai)]
+        dec_sta_adj = [
+            dec.mean(),
+            dec.std(),
+            dec.quantile(),
+            dec.max(),
+            dec.min(),
+            len(dec)]
 
-        return  pd.DataFrame(
+        return pd.DataFrame(
             {'raise': rai_sta_adj, "decline": dec_sta_adj}, index=[
-        'mean', 'std', 'median', 'max', 'min', 'sample_num']).T
+                'mean', 'std', 'median', 'max', 'min', 'sample_num']).T
 
-
-
-    def continue_sta(self, bottom , top):
+    def continue_sta(self, bottom, top):
         boduan = self.boduan
         rai = boduan[boduan.bd_type == "raise"].afterreturns
         dec = boduan[boduan.bd_type == "decline"].afterreturns
@@ -65,8 +84,14 @@ class statistic:
         rai = rai.sort_values()[int(bottom * rai_l):int(top * rai_l)]
         dec = dec.sort_values()[int(bottom * dec_l):int(top * dec_l)]
 
-        rai_sta_adj = [rai.mean(), rai.std(), rai.quantile(), rai.max(), rai.min(), rai[rai < 0.005].shape[0],
-                       rai[rai < 0.005].shape[0] / (rai.shape[0] + 0.0), len(rai)]
+        rai_sta_adj = [rai.mean(),
+                       rai.std(),
+                       rai.quantile(),
+                       rai.max(),
+                       rai.min(),
+                       rai[rai < 0.005].shape[0],
+                       rai[rai < 0.005].shape[0] / (rai.shape[0] + 0.0),
+                       len(rai)]
         dec_sta_adj = [dec.mean(),
                        dec.std(),
                        dec.quantile(),
@@ -76,15 +101,13 @@ class statistic:
                        dec[dec > -0.005].shape[0] / (dec.shape[0] + 0.0),
                        len(dec)]
 
-        return  pd.DataFrame({'raise_returns': rai_sta_adj, "decline_returns": dec_sta_adj}, index=[
-        'mean', 'std', 'median', 'max', 'min', 'invalid', 'percentage', 'sample_num']).T
+        return pd.DataFrame({'raise_returns': rai_sta_adj, "decline_returns": dec_sta_adj}, index=[
+            'mean', 'std', 'median', 'max', 'min', 'invalid', 'percentage', 'sample_num']).T
 
     def continue_sta_day(self, bottom, top):
         boduan = self.boduan
         rai = boduan[boduan.bd_type == "raise"].aftertime
         dec = boduan[boduan.bd_type == "decline"].aftertime
-
-
 
         rai_l = len(rai)
         dec_l = len(dec)
@@ -102,9 +125,8 @@ class statistic:
                        dec[dec <= 3].shape[0] / (dec.shape[0] + 0.0),
                        len(dec)]
 
-
         return pd.DataFrame({'rasie_time': rai_sta_adj, "decline_time": dec_sta_adj}, index=[
-        'mean', 'std', 'median', 'max', 'min', 'invalid', 'percentage', 'sample_num']).T
+            'mean', 'std', 'median', 'max', 'min', 'invalid', 'percentage', 'sample_num']).T
 
     def trade_boduan(self, ratio):
         close = self.close
@@ -122,7 +144,6 @@ class statistic:
             if date in raise_date and cash > 0:
                 p += cash / close.ix[date] * (1 - ratio)
                 cash = 0
-
 
             if date in decline_date and p > 0:
                 cash += p * close.ix[date] * (1 - ratio)
@@ -145,5 +166,3 @@ class statistic:
         self.continue_time = self.continue_sta_day(0.0, 1.0)
         self.limit_continue_time = self.continue_sta_day(0.1, 0.9)
         self.trade_result = self.trade_boduan(0.0)
-
-
