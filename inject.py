@@ -61,8 +61,6 @@ class inject:
                     mapping_df = df_min.ix[a - 1:b + 1].copy()
                     location = b + 1
 
-
-
             else:
                 if not mapping_table:
                     mapping_table.append(df_min.ix[0])
