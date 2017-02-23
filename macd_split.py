@@ -10,11 +10,14 @@ from list import *
 from script import *
 from WindPy import w
 import talib
+import numpy as np
+import pandas as pd
 
 w.start()
 
 
 class point:
+
     def __init__(self, num, close):
         self.num = num
         self.close = close
@@ -59,7 +62,7 @@ class MACD_split:
                 LT, RT = 0, 0
                 while flag_L and j > 0:
                     if DEA_value[j] < 0 and close_value[
-                        j] == np.min(close_value[j:num + 1]):
+                            j] == np.min(close_value[j:num + 1]):
                         LT = j
                         flag_L = False
                     if close_value[j] > close_now:
@@ -74,7 +77,7 @@ class MACD_split:
                 j = num + 1
                 while flag_R and j < close.shape[0]:
                     if DEA_value[j] < 0 and close_value[
-                        j] == np.min(close_value[num:j + 1]):
+                            j] == np.min(close_value[num:j + 1]):
                         RT = j
                         flag_R = False
 
@@ -97,7 +100,7 @@ class MACD_split:
                 LT, RT = 0, 0
                 while flag_L and j > 0:
                     if DEA_value[j] > 0 and close_value[
-                        j] == np.max(close_value[j:num + 1]):
+                            j] == np.max(close_value[j:num + 1]):
                         LT = j
                         flag_L = False
 
@@ -113,7 +116,7 @@ class MACD_split:
                 j = num + 1
                 while flag_R and j < close.shape[0]:
                     if DEA_value[j] > 0 and close_value[
-                        j] == np.max(close_value[num:j + 1]):
+                            j] == np.max(close_value[num:j + 1]):
                         RT = j
                         flag_R = False
 
@@ -147,10 +150,10 @@ class MACD_split:
                 if close.ix[
                    g.data.num:d.data.num + 1
                    ].max() > close.ix[
-                    g.data.num] > close.ix[
-                    d.data.num] == close.ix[
-                                   g.data.num:d.data.num
-                                           + 1].min():
+                        g.data.num] > close.ix[
+                        d.data.num] == close.ix[
+                        g.data.num:d.data.num
+                        + 1].min():
                     print 1
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
 
@@ -193,8 +196,8 @@ class MACD_split:
                    ].max() == close.ix[
                     g.data.num] > close.ix[
                     d.data.num] > close.ix[
-                                  g.data.num:d.data.num + 1
-                                  ].min():
+                    g.data.num:d.data.num + 1
+                ].min():
                     print 2
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
 
@@ -235,8 +238,8 @@ class MACD_split:
                    ].max() > close.ix[
                     g.data.num] > close.ix[
                     d.data.num] > close.ix[
-                                  g.data.num:d.data.num + 1
-                                  ].min():
+                    g.data.num:d.data.num + 1
+                ].min():
                     print 3
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
                     if d.next == 0:
@@ -263,8 +266,8 @@ class MACD_split:
                    ].max() > close_1.ix[
                     g.data.num] > close_1.ix[
                     d.data.num] == close_1.ix[
-                                   g.data.num:d.data.num + 1
-                                   ].min():
+                    g.data.num:d.data.num + 1
+                ].min():
                     print 4
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
 
@@ -302,10 +305,10 @@ class MACD_split:
                 if close_1.ix[
                    g.data.num:d.data.num + 1
                    ].max() == close_1.ix[
-                    g.data.num] > close_1.ix[
-                    d.data.num] > close_1.ix[
-                                  g.data.num:d.data.num +
-                                          1].min():
+                        g.data.num] > close_1.ix[
+                        d.data.num] > close_1.ix[
+                        g.data.num:d.data.num +
+                        1].min():
                     print 5
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
 
@@ -344,10 +347,10 @@ class MACD_split:
                 if close_1.ix[
                    g.data.num:d.data.num + 1
                    ].max() > close_1.ix[
-                    g.data.num] > close_1.ix[
-                    d.data.num] > close_1.ix[
-                                  g.data.num:d.data.num +
-                                          1].min():
+                        g.data.num] > close_1.ix[
+                        d.data.num] > close_1.ix[
+                        g.data.num:d.data.num +
+                        1].min():
                     print 6
                     print str(close.index[g.data.num]) + " === " + str(close.index[d.data.num])
 
@@ -435,13 +438,13 @@ class MACD_split:
             for j in range(len(dea)):
                 if bd_mark == "decline":
                     if dea[j] < 0 and priceseries[
-                        j] == priceseries[:j + 1].min():
+                            j] == priceseries[:j + 1].min():
                         des = j
                         break
 
                 if bd_mark == "raise":
                     if dea[j] > 0 and priceseries[
-                        j] == priceseries[:j + 1].max():
+                            j] == priceseries[:j + 1].max():
                         des = j
                         break
             comfirmpoint.append(list(self.dea.index).index(dea.index[des]))
@@ -497,14 +500,16 @@ class MACD_split:
         lastdea = self.dea.ix[end_date:]
         date = ""
         if bd_type == "raise":
-            for i in range(1,lastclose.shape[0]):
-                if lastclose.iloc[i] == lastclose[:i + 1].min() and lastdea.iloc[i] < 0:
+            for i in range(1, lastclose.shape[0]):
+                if lastclose.iloc[i] == lastclose[
+                        :i + 1].min() and lastdea.iloc[i] < 0:
                     date = lastclose.index[i]
                     break
 
         if bd_type == "decline":
-            for i in range(1,lastclose.shape[0]):
-                if lastclose.iloc[i] == lastclose[:i + 1].max() and lastdea.iloc[i] > 0:
+            for i in range(1, lastclose.shape[0]):
+                if lastclose.iloc[i] == lastclose[
+                        :i + 1].max() and lastdea.iloc[i] > 0:
                     date = lastclose.index[i]
                     break
         if date:
@@ -531,7 +536,6 @@ class MACD_split:
             return comfirm_point, boduan.iloc[-2].bd_type
         else:
             return comfirm_point, boduan.iloc[-1].bd_type
-
 
 
 def get_data(code, field, perid, start, end):
@@ -618,7 +622,7 @@ def summary(code, filepath, outfilefold):
             outfilefold +
             "\\%s" %
             code[
-            :6] +
+                :6] +
             "-%s" %
             start +
             "-%s.xlsx" %
@@ -626,10 +630,10 @@ def summary(code, filepath, outfilefold):
     code_data_split.boduan.to_excel(
         outfilefold + "\\%s" %
         code[
-        :6] + "-dayboduan.xlsx")
+            :6] + "-dayboduan.xlsx")
     min_data_split.boduan.to_excel(
         outfilefold + "\\%s" %
         code[
-        :6] + "-minboduan.xlsx")
+            :6] + "-minboduan.xlsx")
     summary_data.to_excel(outfilefold + "\\%s" % code[:6] + "--summary.xlsx")
     return min_data_split, code_data_split
