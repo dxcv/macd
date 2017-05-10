@@ -12,7 +12,7 @@ root_user = Tk()
 
 def getYesterday():
     today = datetime.date.today()
-    oneday = datetime.timedelta(days=2)
+    oneday = datetime.timedelta(days=0)
     yesterday = today - oneday
     return yesterday
 
@@ -89,7 +89,7 @@ class Show_Macd:
             height=2).pack(
             side=BOTTOM)
 
-        self.t1 = Text(frame, width=100, height=40)
+        self.t1 = Text(frame, width=100, height=30)
         self.t1.pack()
         self.t2 = Text(frame, width=20, height=2)
         self.t2.pack()
@@ -194,7 +194,7 @@ class Show_Macd:
         self.t1.insert(END, "============================================\n")
         self.t1.insert(END, "指数价格分段%s\n" % code)
         self.t1.insert(
-            END, "波段开始时间          波段结束时间          波段确认时间          波段涨跌\n")
+            END, "波段开始时间          波段结束时间          波段确认时间          价格          波段涨跌\n")
 
         for i in range(boduan.shape[0]):
             temp = boduan.iloc[i]
@@ -203,6 +203,8 @@ class Show_Macd:
                            str(temp.end_date) +
                            "   " +
                            str(temp.comfirm_date) +
+                           "   " +
+                           str(temp.end_price) +
                            "   " +
                            temp.bd_type +
                            "\n")
@@ -309,6 +311,8 @@ class Show_Macd:
             ithbd = code_data_split.boduan.ix[i]
             start = ithbd.start_date.strftime("%Y-%m-%d")
             end = ithbd.end_date.strftime("%Y-%m-%d")
+            if len(duan_detail[i].shape) == 1:
+                duan_detail[i] = pd.DataFrame(duan_detail[i], columns=duan_detail[i].index)
             duan_detail[i].to_excel(writer_boduan,
                                     sheet_name=start + "-%s.csv" % end)
         writer_boduan.save()
