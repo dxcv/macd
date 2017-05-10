@@ -1,17 +1,19 @@
 class Node(object):
+
     def __init__(self, val, p=0):
         self.data = val
         self.next = p
         self.prev = p
 
     def __lt__(self, other):
-        if self.data<other.data:
+        if self.data < other.data:
             return True
         else:
             return False
 
 
 class LinkList(object):
+
     def __init__(self):
         self.head = 0
 
@@ -113,8 +115,8 @@ class LinkList(object):
             print 'Linklist is empty.'
             return
         if index == 0:
-            self.head=self.head.next
-            self.head.prev=0
+            self.head = self.head.next
+            self.head.prev = 0
 
         p = self.head
         post = self.head
@@ -123,9 +125,9 @@ class LinkList(object):
             post = p
             p = p.next
             j += 1
-        if index == j and j>0:
+        if index == j and j > 0:
             post.next = p.next
-            if j<self.getlength()-1:
+            if j < self.getlength() - 1:
                 p.next.prev = post
 
     def index(self, value):
@@ -142,9 +144,9 @@ class LinkList(object):
         else:
             return -1
 
-    def delete(self,g):
-        index=self.index(g.data)
-        if index==-1:
+    def delete(self, g):
+        index = self.index(g.data)
+        if index == -1:
             print "data is not in List "
         else:
             self.delete_index(index)
