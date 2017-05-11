@@ -148,6 +148,9 @@ class Show_Macd:
         close = pd.concat([priceSeries.close, newdata[1:].close])
         self.min_close = close[-num * 8:]
         self.minute = MACD_split(self.min_close)
+        if newdata.shape[0] >= 40:
+            close_df = pd.DataFrame({'time': list(close.index), 'close': close})
+            close_df.to_excel(self.fname)
         self.t2.insert(END, "导入分钟数据完毕！")
 
     def wind_data_min(self):
@@ -302,7 +305,6 @@ class Show_Macd:
         writer_day.save()
         writet_minute.save()
         writer_pre.save()
-
         code_data_split = self.day
 
         writer_boduan = pd.ExcelWriter(filepath + "\\boduan_mapping.xlsx")
