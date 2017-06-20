@@ -186,7 +186,7 @@ class inject:
                 'now_day_start',
                 'future_minute_situation',
                 'now_minute_situation',
-                'future_min_start',
+                'future_min_start ',
                 'future_min_end',
                 'now_min_start',
                 'future_min_duannum',
