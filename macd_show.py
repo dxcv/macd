@@ -197,7 +197,7 @@ class Show_Macd:
         self.t1.insert(END, "============================================\n")
         self.t1.insert(END, "指数价格分段%s\n" % code)
         self.t1.insert(
-            END, "波段开始时间          波段结束时间          波段确认时间          结束点价格          波段涨跌\n")
+            END, "波段开始时间          波段结束时间          波段确认时间          波段涨跌\n")
 
         for i in range(boduan.shape[0]):
             temp = boduan.iloc[i]
@@ -206,8 +206,6 @@ class Show_Macd:
                            str(temp.end_date) +
                            "   " +
                            str(temp.comfirm_date) +
-                           "   " +
-                           str(temp.end_price) +
                            "   " +
                            temp.bd_type +
                            "\n")
