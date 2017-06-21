@@ -186,7 +186,7 @@ class inject:
                 'now_day_start',
                 'future_minute_situation',
                 'now_minute_situation',
-                'future_min_start ',
+                'future_min_start',
                 'future_min_end',
                 'now_min_start',
                 'future_min_duannum',
@@ -260,9 +260,6 @@ class inject:
         df['now_day_situation'].ix[end_day:day_date] = "raise" if day_type == "decline" else "decline"
         df['future_day_start'].ix[end_day:day_date] = end_day
         self.now_situation = df
-
-
-
 
     def misplace(self):
         min_boduan = self.min_boduan
@@ -750,8 +747,23 @@ class inject:
         in_tupo_buy = False
         in_tupo_sell = False
         day_boduan = self.day_boduan
+        min_boduan = self.min_boduan
         min_close = self.min_close
         day_close = self.day_close
+        now_situation = self.now_situation
+        duan_buy_date = []
+        duan_sell_date = []
+        for i in range(1, now_situation.shape[0]):
+            today = now_situation.iloc[i]
+            yesterday = now_situation.iloc[i - 1]
+            if today.now_min_duannum == 8 and yesterday.now_min_duannum == 7:
+                if today.now_day_situation == "decline":
+                    duan_buy_date.append(now_situation.index[i])
+                else:
+                    duan_sell_date.append(now_situation.index[i])
+
+        duan_buy = False
+        duan_sell = False
         buy_date = day_boduan[
             day_boduan.bd_type == "raise"].comfirm_date.tolist()
         sell_date = day_boduan[
@@ -771,23 +783,47 @@ class inject:
                 p += cash / price_today
                 cash = 0
                 in_tupo_sell = False
+                duan_sell = False
+                print "buy in %s" % date
 
             if date in sell_date and p > 0:
                 cash += p * price_today
                 p = 0
                 in_tupo_buy = False
+                duan_buy = False
+                print "sell in %s" % date
 
             if date in situation_date_buy and cash > 0:
                 p += cash / price_today
                 cash = 0
                 in_tupo_buy = True
+                duan_sell = False
                 buyday = date
+                print "situation_buy in %s" % date
 
-            if date in situation_date_sell:
+            if date in situation_date_sell and p > 0:
                 cash += p * price_today
                 p = 0
                 in_tupo_sell = True
+                duan_buy = False
                 sellday = date
+                print "situation_sell in %s" % date
+
+            if date in duan_buy_date and cash > 0:
+                p += cash / price_today
+                cash = 0
+                duan_buy = True
+                in_tupo_sell = False
+                duan_buyday = date
+                print "duan_buy in %s" % date
+
+            if date in duan_sell_date and p > 0:
+                cash += p * price_today
+                p = 0
+                duan_sell = True
+                in_tupo_buy = False
+                duan_sellday = date
+                print "duan_sell in %s" % date
 
             if in_tupo_buy and p > 0:
                 temp = day_boduan[day_boduan.comfirm_date < buyday]
@@ -807,6 +843,22 @@ class inject:
                         cash = 0
                         in_tupo_sell = False
 
+            if duan_buy and p > 0:
+                temp = min_boduan[min_boduan.end_date < duan_buyday]
+                if not temp.empty:
+                    if price_today < temp.iloc[-1].end_price:
+                        cash += p * price_today
+                        p = 0
+                        duan_buy = False
+
+            if duan_sell and p > 0:
+                temp = min_boduan[min_boduan.end_date < duan_sellday]
+                if not temp.empty:
+                    if price_today > temp.iloc[-1].end_price:
+                        p += cash / price_today
+                        cash = 0
+                        duan_sell = False
+
             stream.append(cash + p * price_today)
         df = pd.DataFrame({'strategy': stream,
                            'benchmark': min_close.values},
@@ -820,3 +872,5 @@ class inject:
         self.comfirm_num()
         self.misplace()
         self.restrict()
+        self.day_situation()
+
